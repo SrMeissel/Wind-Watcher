@@ -1,37 +1,38 @@
 import dearpygui.dearpygui as dpg
-import mysql.connector 
+import dearpygui.demo as demo
 
-database = mysql.connector.connect( 
-    host= "localhost",
-    user= "client",
-    password = "meissel",
-    database = "WindWatcher"
-)
-print(database)
 
-cursor = database.cursor()
-
-#cursor.execute("CREATE DATABASE WindWatcher")
-#cursor.execute("SHOW DATABASES")
-
-#cursor.execute("CREATE TABLE Data (DeviceID VARCHAR(255), Temperature VARCHAR(255), Pressure VARCHAR(255))")
-#cursor.execute("ALTER TABLE Data ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY")
-#cursor.execute("SHOW TABLES")
-
-for x in cursor:
-    print(x)
-
-# GUI ================================================
+#Init=====================================================================
 dpg.create_context()
-dpg.create_viewport(title='Custom Title', width=600, height=300)
+dpg.create_viewport(title='Wind Watcher', width=600, height=600)
 
-with dpg.window(label="Example Window"):
-    dpg.add_text("Hello, world")
-    dpg.add_button(label="Save")
-    dpg.add_input_text(label="string", default_value="Quick brown fox")
-    dpg.add_slider_float(label="float", default_value=0.273, max_value=1)
+#define event handles
+def example_handler(sender, app_data):
+    print("handle happened :) \n")
 
+with dpg.item_handler_registry(tag="Widget Handler"):
+    dpg.add_item_clicked_handler(callback=example_handler)
+
+#define window objects
+with dpg.window(tag="Primary Window"):
+    dpg.add_text("Click Me", tag = "text")
+
+#bind handlers to objects
+dpg.bind_item_handler_registry("text", "Widget Handler")
+
+#prepare to render
 dpg.setup_dearpygui()
 dpg.show_viewport()
-dpg.start_dearpygui()
+dpg.set_primary_window("Primary Window", True)
+
+#Run =====================================================================
+while dpg.is_dearpygui_running():
+    # insert here any code you would like to run in the render loop
+    # you can manually stop by using stop_dearpygui()
+    
+    dpg.render_dearpygui_frame() 
+
+
+    
+
 dpg.destroy_context()
